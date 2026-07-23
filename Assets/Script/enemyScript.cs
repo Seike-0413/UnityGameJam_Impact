@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class enemyScript : MonoBehaviour
 {
-    public float MoveSpeed = 0.01f;
-    public float rotateSpeed = 0.5f;
-    //public float JumpPower=6.0f;
+    public float MoveSpeed = 10.0f;
+    public float rotateSpeed = 1.0f;
+    public float stopDistance = 10.0f;
 
     private Transform player;
 
@@ -51,8 +51,19 @@ public class enemyScript : MonoBehaviour
         }
 
         //前進する
-        transform.position += transform.forward * MoveSpeed * Time.deltaTime;
+        //transform.position += transform.forward * MoveSpeed * Time.deltaTime;
+        float distance = Vector3.Distance(transform.position, player.position);
+        if(distance>stopDistance)
+        {
+            transform.position += transform.forward * MoveSpeed * Time.deltaTime;
+        }
+        
 
+        //if(target == Vector3.zero)
+        //{
+        //    MoveSpeed = 0;
+        //    rotateSpeed = 0;
+        //}
 
         enemyUI();
 
