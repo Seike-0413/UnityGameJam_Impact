@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class GroundChecker : MonoBehaviour
+public class GC : MonoBehaviour
 {
     // 接地しているかを格納する変数
     bool m_isGround;
