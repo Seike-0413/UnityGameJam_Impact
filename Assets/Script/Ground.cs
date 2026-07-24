@@ -3,8 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public class GC : MonoBehaviour
+public class Ground : MonoBehaviour
 {
     // 接地しているかを格納する変数
     bool m_isGround;
