@@ -1,4 +1,5 @@
 using System;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class enemyScript : MonoBehaviour
@@ -6,8 +7,11 @@ public class enemyScript : MonoBehaviour
     public float MoveSpeed = 10.0f;
     public float rotateSpeed = 1.0f;
     public float stopDistance = 10.0f;
+    public float attackDistnance = 10.0f;
+    public float attackInterval = 2.0f;
 
     private Transform player;
+    private float attackTimer;
 
     Rigidbody m_rigidBody;
     //Animation m_enemyAnimatior;
@@ -55,7 +59,19 @@ public class enemyScript : MonoBehaviour
         float distance = Vector3.Distance(transform.position, player.position);
         if(distance>stopDistance)
         {
+            //追いかける
             transform.position += transform.forward * MoveSpeed * Time.deltaTime;
+        }
+        else
+        {
+            //止まって攻撃
+            attackTimer += Time.deltaTime;
+
+            if(attackTimer>=attackInterval)
+            {
+                Attack();
+                attackTimer = 0;
+            }
         }
         
 
@@ -75,25 +91,11 @@ public class enemyScript : MonoBehaviour
         //transform.LookAt(target);
 
     }
-    //public void Action()
-    //{
+    
+    void Attack()
+    {
 
-
-    //}
-
-    //public void Animation()
-    //{
-    //    //移動フラグ
-    //    m_enemyAnimator.SetBool("MoveFlag", m_moveFlag);
-
-    //    ////ジャンプフラグ
-    //    //if(m_jumpFlag&&m_airFlag==false&&Ground_Checker.GetlsGround()==false)
-    //    //{
-    //    //    m_airFlag = true;
-    //    //    m_enemyAnimator.SetBool("JumpFlag", true);
-    //    //}
-
-    //}
+    }
     public void enemyUI()
     {
 
