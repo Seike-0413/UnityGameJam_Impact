@@ -97,20 +97,34 @@
 //        timeText.text = $"{m:00}:{s:00}";
 //    }
 //}
+using System;
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
-public class Timer : MonoBehaviour
+using System;
+
+public class TimeCount : MonoBehaviour
 {
-    [SerializeField] private Image uiFill;
-    [SerializeField] private TextMeshProUGUI uiText;
-    [SerializeField] private float CountTime;
+    public int countdownMinutes = 3; // 制限時間（分）
+    private float countdownSeconds; // 残り秒数
+    private TextMeshProUGUI timeText; // 表示用テキスト
+
+    private void Start()
+    {
+        timeText = GetComponent<TextMeshProUGUI>();
+        countdownSeconds = countdownMinutes * 60; // 分を秒に変換
+    }
+
     private void Update()
     {
-        float timer = CountTime - Time.time;
-        int minutes = Mathf.FloorToInt(timer / 60);
-        int seconds = Mathf.FloorToInt(timer % 60);
-        uiFill.fillAmount = Mathf.InverseLerp(0, CountTime, timer);
-        uiText.text = minutes.ToString("00") + ":" + seconds.ToString("00");
+        countdownSeconds -= Time.deltaTime; // 毎フレーム経過時間を減算
+        var span = new TimeSpan(0, 0, (int)countdownSeconds);
+        timeText.text = span.ToString(@"mm\:ss"); // mm:ss形式で表示
+
+        if (countdownSeconds <= 0)
+        {
+            // カウントダウン終了時の処理
+            timeText.text = "00:00";
+            enabled = false; // Update停止
+        }
     }
 }
