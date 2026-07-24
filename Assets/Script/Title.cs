@@ -6,13 +6,16 @@ public class Title : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     public void Start()
     {
-        Debug.Log("Startボタンが押された");
-        SceneManager.LoadScene("SampleScene");
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Spaceキーが押された");
+            SceneManager.LoadScene("SampleScene");
+        }
     }
 }
