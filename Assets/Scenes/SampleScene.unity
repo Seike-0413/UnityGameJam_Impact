@@ -1873,7 +1873,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.9
+      value: -10.96
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1881,7 +1881,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 400326, guid: 8f0565f23a2b58541a475bd3c1393052, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5655,6 +5655,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61a19aee2a9318468849e973ed53983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
+  MoveSpeed: 0.01
+  JumpPower: 6
 --- !u!1001 &658361345
 PrefabInstance:
   m_ObjectHideFlags: 0
