@@ -100,12 +100,12 @@
 using System;
 using UnityEngine;
 using TMPro;
-using System;
+using UnityEngine.SceneManagement;
 
 public class TimeCount : MonoBehaviour
 {
-    public int countdownMinutes = 3; // 制限時間（分）
-    private float countdownSeconds; // 残り秒数
+    public int countdownMinutes = 0; // 制限時間（分）
+    private float countdownSeconds = 10; // 残り秒数
     private TextMeshProUGUI timeText; // 表示用テキスト
 
     private void Start()
@@ -125,6 +125,9 @@ public class TimeCount : MonoBehaviour
             // カウントダウン終了時の処理
             timeText.text = "00:00";
             enabled = false; // Update停止
+                            
+            // GameClearシーンへ遷移
+            SceneManager.LoadScene("GameClear");
         }
     }
 }
