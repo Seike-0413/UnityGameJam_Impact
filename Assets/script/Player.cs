@@ -28,7 +28,7 @@ public class Player : MonoBehaviour
 void Update()
 {
         if (Gamepad.current == null) return;
-        Debug.Log(m_mainCamera.transform.forward);
+        //Debug.Log(m_mainCamera.transform.forward);
 
         // 移動速度を初期化
         Vector3 move = Vector3.zero;
