@@ -2,13 +2,17 @@ using UnityEngine;
 
 public class Bulleet : MonoBehaviour
 {
-    private void OnCollisionEnter(Collision collision)
+    //private void OnCollisionEnter(Collision collision)
+    //{
+    //    Destroy(gameObject);
+
+    //}
+    private void OnTriggerEnter(Collider other)
     {
         Destroy(gameObject);
-
     }
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+// Start is called once before the first execution of Update after the MonoBehaviour is created
+void Start()
     {
         
     }
