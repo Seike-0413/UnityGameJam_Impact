@@ -2107,7 +2107,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e61a19aee2a9318468849e973ed53983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  MoveSpeed: 10
+  MoveSpeed: 0.01
   JumpPower: 6
   HP: 100
 --- !u!1 &330585543

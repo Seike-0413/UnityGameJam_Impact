@@ -2,14 +2,17 @@ using MathNet.Numerics.Optimization.ObjectiveFunctions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    public float MoveSpeed = 0.01f;
+    public float MoveSpeed = 1.0f;
 
     public float JumpPower = 6.0f;
 
     public int HP = 100;
+
+    bool IsGround = false;
 
     Rigidbody m_rigidBody;
     GameObject m_mainCamera;
@@ -24,56 +27,76 @@ public class Player : MonoBehaviour
 
 void Update()
 {
-    // 移動速度を初期化
-    Vector3 move = Vector3.zero;
+        if (Gamepad.current == null) return;
+        Debug.Log(m_mainCamera.transform.forward);
 
+        // 移動速度を初期化
+        Vector3 move = Vector3.zero;
 
-    // 前後移動
-    if (Input.GetKey(KeyCode.W))
-    {
-        move.z += MoveSpeed;
-    }
-    if (Input.GetKey(KeyCode.S))
-    {
-        move.z += -MoveSpeed;
-    }
-    // 左右移動
-    if (Input.GetKey(KeyCode.D))
-    {
-        move.x += MoveSpeed;
-    }
-    if (Input.GetKey(KeyCode.A))
-    {
-        move.x += -MoveSpeed;
-    }
+        Vector2 moveInput = Gamepad.current.leftStick.ReadValue();
 
-        //カメラを考慮した移動
-        Vector3 PlayerMove = Vector3.zero;
+        //move.x = moveInput.x * MoveSpeed;
+        //move.z = moveInput.y * MoveSpeed;
+
+        ////カメラを考慮した移動
+        //Vector3 PlayerMove = Vector3.zero;
 
         Vector3 forward = m_mainCamera.transform.forward;
         Vector3 right = m_mainCamera.transform.right;
         forward.y = 0.0f;
         right.y = 0.0f;
-        right *= move.x;
-        forward*= move.z;
-        //移動速度に上記で計算したベクトルを加算する
-        PlayerMove += right +forward;
-        //移動させる
-        transform.position += PlayerMove * Time.deltaTime;
+        forward.Normalize();
+        right.Normalize();
+        Vector3 PlayerMove = forward * moveInput.y + right * moveInput.x;
 
-    // 移動させる
-    transform.position += move;
-        // 回転
-        if (move.sqrMagnitude > 0.0f)
+        ////移動速度に上記で計算したベクトルを加算する
+        //PlayerMove = right * move.x + forward * move.z;
+        ////移動させる
+        //if (PlayerMove.magnitude > 1.0f)
+        //{
+        //    PlayerMove.Normalize();
+        //}
+
+        transform.position += PlayerMove * MoveSpeed * Time.deltaTime;
+
+        if (PlayerMove.magnitude > 1.0f)
         {
-            transform.rotation = Quaternion.LookRotation(move.normalized);
+            if (PlayerMove.magnitude > 1.0f) ;
         }
-        // ジャンプ
-        if (Input.GetKeyDown(KeyCode.Space))
+
+            //// 移動させる
+            //transform.position += move;
+            // 回転
+            if (PlayerMove.sqrMagnitude > 0.001f) ;
         {
-            m_rigidBody.AddForce(new Vector3(0.0f, JumpPower, 0.0f),
-                ForceMode.VelocityChange);
+            transform.rotation = Quaternion.LookRotation(PlayerMove);
         }
+        //// ジャンプ
+        //if (Gamepad.current.buttonSouth.wasPressedThisFrame)
+        //{
+        //    m_rigidBody.AddForce(
+        //        Vector3.up * JumpPower,
+        //        ForceMode.Impulse
+        //    );
+        //}
+        if (IsGround &&
+    Gamepad.current.buttonSouth.wasPressedThisFrame)
+        {
+            m_rigidBody.AddForce(
+                new Vector3(0.0f, JumpPower, 0.0f),
+                ForceMode.VelocityChange
+            );
+        }
+
+    }
+    private void OnCollisionStay(Collision collision)
+    {
+        IsGround = true;
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        IsGround = false;
     }
 
     public void TakeDamage(int damage)
