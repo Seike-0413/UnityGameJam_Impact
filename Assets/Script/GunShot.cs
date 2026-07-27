@@ -1,11 +1,13 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class GunShot : MonoBehaviour
 {
     public GameObject bulletPrefab;
     public Transform firePoint;
-    public float speed = 30f;
-   
+    public float speed = 500f;
+
+
     void Start()
     {
         
@@ -14,7 +16,8 @@ public class GunShot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Mouse.current.leftButton.wasPressedThisFrame ||
+    (Gamepad.current != null && Gamepad.current.rightTrigger.wasPressedThisFrame))
         {
             GameObject bullet = Instantiate(
                 bulletPrefab,
