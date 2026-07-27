@@ -1,0 +1,30 @@
+using UnityEngine;
+
+public class GunShot : MonoBehaviour
+{
+    public GameObject bulletPrefab;
+    public Transform firePoint;
+    public float speed = 30f;
+   
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            GameObject bullet = Instantiate(
+                bulletPrefab,
+                firePoint.position,
+                firePoint.rotation);
+
+            Rigidbody rb = bullet.GetComponent<Rigidbody>();
+            rb.linearVelocity = firePoint.forward * speed;
+
+            Destroy(bullet, 5f);
+        }
+    }
+}
