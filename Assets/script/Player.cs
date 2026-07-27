@@ -24,8 +24,9 @@ public class Player : MonoBehaviour
         //メインカメラのゲームオブジェクトを取得する
         m_mainCamera = Camera.main.gameObject;
 }
+    private Vector3 lastDirection = Vector3.forward;
 
-void Update()
+    void Update()
 {
         if (Gamepad.current == null) return;
         //Debug.Log(m_mainCamera.transform.forward);
@@ -59,18 +60,25 @@ void Update()
 
         transform.position += PlayerMove * MoveSpeed * Time.deltaTime;
 
-        if (PlayerMove.magnitude > 1.0f)
-        {
-            if (PlayerMove.magnitude > 1.0f) ;
-        }
+        //if (PlayerMove.magnitude > 1.0f)
+        //{
+        //    if (PlayerMove.magnitude > 1.0f) ;
+        //}
 
             //// 移動させる
             //transform.position += move;
             // 回転
             if (PlayerMove.sqrMagnitude > 0.001f) ;
         {
+            //lastDirection = PlayerMove.normalized;
             transform.rotation = Quaternion.LookRotation(PlayerMove);
         }
+        //
+        if (PlayerMove.sqrMagnitude > 0.001f) 
+        {
+            lastDirection = PlayerMove.normalized;
+        }
+        transform.rotation = Quaternion.LookRotation(lastDirection);
         //// ジャンプ
         //if (Gamepad.current.buttonSouth.wasPressedThisFrame)
         //{
