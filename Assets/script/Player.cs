@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public float JumpPower = 6.0f;
 
     public int HP = 100;
+    public Gameover gameover;
 
     bool IsGround = false;
 
@@ -116,6 +117,7 @@ public class Player : MonoBehaviour
         if (HP <= 0)
         {
             Debug.Log("ゲームオーバー");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Gameover");
         }
     }
 }
