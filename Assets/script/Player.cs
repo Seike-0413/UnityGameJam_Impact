@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 
     public float JumpPower = 6.0f;
 
+    public int HP = 100;
 
     Rigidbody m_rigidBody;
     void Start()
@@ -54,6 +55,18 @@ void Update()
         {
             m_rigidBody.AddForce(new Vector3(0.0f, JumpPower, 0.0f),
                 ForceMode.VelocityChange);
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        HP -= damage;
+
+        Debug.Log("プレイヤーHP：" + HP);
+
+        if (HP <= 0)
+        {
+            Debug.Log("ゲームオーバー");
         }
     }
 }
