@@ -1,3 +1,4 @@
+using MathNet.Numerics.Optimization.ObjectiveFunctions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,10 +12,14 @@ public class Player : MonoBehaviour
     public int HP = 100;
 
     Rigidbody m_rigidBody;
+    GameObject m_mainCamera;
     void Start()
 {
         // 自分にアタッチされているRigidBodyを取得する
         m_rigidBody = GetComponent<Rigidbody>();
+
+        //メインカメラのゲームオブジェクトを取得する
+        m_mainCamera = Camera.main.gameObject;
 }
 
 void Update()
@@ -42,6 +47,19 @@ void Update()
         move.x += -MoveSpeed;
     }
 
+        //カメラを考慮した移動
+        Vector3 PlayerMove = Vector3.zero;
+
+        Vector3 forward = m_mainCamera.transform.forward;
+        Vector3 right = m_mainCamera.transform.right;
+        forward.y = 0.0f;
+        right.y = 0.0f;
+        right *= move.x;
+        forward*= move.z;
+        //移動速度に上記で計算したベクトルを加算する
+        PlayerMove += right +forward;
+        //移動させる
+        transform.position += PlayerMove * Time.deltaTime;
 
     // 移動させる
     transform.position += move;
