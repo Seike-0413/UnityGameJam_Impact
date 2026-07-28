@@ -18,4 +18,8 @@ public class GameClear : MonoBehaviour
             SceneManager.LoadScene("Title");
         }
     }
+    public void GoToTitle()
+    {
+        SceneManager.LoadScene("Title");
+    }
 }
