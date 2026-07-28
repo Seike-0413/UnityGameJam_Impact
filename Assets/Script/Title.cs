@@ -39,7 +39,7 @@ public class Title : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("inGame");
     }
 
     void Update()
