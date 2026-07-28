@@ -2,13 +2,18 @@ using UnityEngine;
 
 public class Bulleet : MonoBehaviour
 {
-    //private void OnCollisionEnter(Collision collision)
-    //{
-    //    Destroy(gameObject);
-
-    //}
-    private void OnTriggerEnter(Collider other)
+    public float damage = 10f;
+    private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log("Hit : " + collision.gameObject.name);
+
+        enemyScript enemy = collision.gameObject.GetComponentInParent<enemyScript>();
+        if (enemy != null) 
+        {
+            Debug.Log("Enemy Hit!");
+            enemy.Damage(damage); 
+        }
+
         Destroy(gameObject);
     }
 // Start is called once before the first execution of Update after the MonoBehaviour is created

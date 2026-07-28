@@ -107,8 +107,13 @@ public class TimeCount : MonoBehaviour
     public int countdownMinutes = 0; // 制限時間（分）
     private float countdownSeconds = 10; // 残り秒数
     private TextMeshProUGUI timeText; // 表示用テキスト
+    
+    private void OnCollisionEnter(Collision collision)
+    {
+        Destroy(gameObject);    //着弾時消滅
+    }
 
-    private void Start()
+private void Start()
     {
         timeText = GetComponent<TextMeshProUGUI>();
         countdownSeconds = countdownMinutes * 60; // 分を秒に変換

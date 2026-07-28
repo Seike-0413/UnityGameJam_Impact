@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class enemyScript : MonoBehaviour
 {
+    public void Damage(float damage)//
+    {
+        currentHP -= damage;
+        
+        Debug.Log("Enemy HP : " + currentHP);
+        
+            if (currentHP <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }//
+
     public float MoveSpeed = 10.0f;
     public float rotateSpeed = 1.0f;
     public float stopDistance = 10.0f;
@@ -11,6 +23,7 @@ public class enemyScript : MonoBehaviour
     public float attackInterval = 5.0f;
 
     public float maxHP = 300;
+    private float currentHP;//+
 
     public GameObject shockWavePrefab;
     public Transform attackPoint;
@@ -22,6 +35,7 @@ public class enemyScript : MonoBehaviour
    
     void Start()
     {
+        currentHP = maxHP;//+
         //自分にアタッチされているRigidBodyを取得する
         m_rigidBody = GetComponent<Rigidbody>();
 

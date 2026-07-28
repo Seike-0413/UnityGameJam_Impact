@@ -7,6 +7,7 @@ public class GunShot : MonoBehaviour
     public Transform firePoint;
     public float speed = 500f;
 
+   
 
     void Start()
     {

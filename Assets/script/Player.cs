@@ -1,11 +1,17 @@
+using GnWrappers;
 using MathNet.Numerics.Optimization.ObjectiveFunctions;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
 public class Player : MonoBehaviour
 {
+  //  UnityEngine.Animator animator;
+    //[SerializeField]private UnityEngine.Animator animator;
+
+
     public float MoveSpeed = 1.0f;
 
     public float JumpPower = 6.0f;
@@ -19,12 +25,16 @@ public class Player : MonoBehaviour
     GameObject m_mainCamera;
     void Start()
 {
+       
+
         // 自分にアタッチされているRigidBodyを取得する
         m_rigidBody = GetComponent<Rigidbody>();
 
         //メインカメラのゲームオブジェクトを取得する
         m_mainCamera = Camera.main.gameObject;
-}
+
+        //animator = GetComponent<UnityEngine.Animator>();
+    }
     private Vector3 lastDirection = Vector3.forward;
 
     void Update()
@@ -50,6 +60,12 @@ public class Player : MonoBehaviour
         forward.Normalize();
         right.Normalize();
         Vector3 PlayerMove = forward * moveInput.y + right * moveInput.x;
+
+        //float speed = PlayerMove.magnitude; 
+        //animator.SetFloat("MoveSpeed", speed);
+
+        //bool isAim = Gamepad.current.leftTrigger.isPressed;
+        //animator.SetBool("IsAim", isAim);
 
         ////移動速度に上記で計算したベクトルを加算する
         //PlayerMove = right * move.x + forward * move.z;
