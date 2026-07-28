@@ -13,6 +13,8 @@ public class enemyScript : MonoBehaviour
             if (currentHP <= 0)
         {
             Destroy(gameObject);
+            Debug.Log("ゲームクリアー");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("GameClear");
         }
     }//
 
@@ -23,10 +25,11 @@ public class enemyScript : MonoBehaviour
     public float attackInterval = 5.0f;
 
     public float maxHP = 300;
-    private float currentHP;//+
+    private float currentHP;
 
     public GameObject shockWavePrefab;
     public Transform attackPoint;
+    public GameObject waterEffect;
 
     private Transform player;
     private float attackTimer;
@@ -91,14 +94,16 @@ public class enemyScript : MonoBehaviour
     void Attack()
     {
         Debug.Log("attack実行");
-
+        Debug.Log(attackPoint.position);
         //衝撃波エフェクトを出す
-        //Instantiate(
-        //           shockWavePrefab,
-        //           attackPoint.position,
-        //           Quaternion.identity
-        //           );
-
+        //Instantiate(waterEffect, attackPoint.position, Quaternion.identity);
+        //Instantiate(waterEffect, attackPoint.position + new Vector3(1.5f, 0, 0), Quaternion.identity);
+        //Instantiate(waterEffect, attackPoint.position + new Vector3(-1.5f, 0, 0), Quaternion.identity);
+        Instantiate(
+    waterEffect,
+    attackPoint.position + Vector3.up * 2f,
+    Quaternion.identity
+);
         //範囲内の検索
         Collider[] hitPlayers = Physics.OverlapSphere(
             transform.position, attackDistance);
