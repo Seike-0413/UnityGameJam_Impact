@@ -12,6 +12,7 @@ public class PlayerHP : MonoBehaviour
 
     void Start()
     {
+        Damage(20);
         hp = maxHP;
         UpdateHP();
     }
@@ -30,6 +31,5 @@ public class PlayerHP : MonoBehaviour
     {
         hpBar.value = hp;
         hpText.text = hp + " / " + maxHP;
-        Damage(20);
     }
 }
