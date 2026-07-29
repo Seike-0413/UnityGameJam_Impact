@@ -154,6 +154,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9846875b218817a4da97fc14bfb7c400, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bulleet
+  damage: 10
 --- !u!136 &-6867872191147255903
 CapsuleCollider:
   m_ObjectHideFlags: 0
