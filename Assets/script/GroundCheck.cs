@@ -5,6 +5,7 @@ using UnityEngine;
 
 
 public class GroundChecker : MonoBehaviour
+
 {
     // 接地しているかを格納する変数
     bool m_isGround;

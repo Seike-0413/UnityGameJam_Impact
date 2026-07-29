@@ -1,6 +1,7 @@
 using System;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using System.Collections;
 
 public class enemyScript : MonoBehaviour
 {
@@ -17,7 +18,7 @@ public class enemyScript : MonoBehaviour
             Debug.Log("ゲームクリアー");
             UnityEngine.SceneManagement.SceneManager.LoadScene("GameClear");
         }
-    }//
+    }
 
     public float MoveSpeed = 10.0f;
     public float rotateSpeed = 1.0f;
@@ -28,11 +29,14 @@ public class enemyScript : MonoBehaviour
     public float maxHP = 300;
     private float currentHP;
     public BossHPBar hpBar;
+    private bool isPreparingAttack = false;
+    private bool attackLocked = false;
 
     public GameObject shockWavePrefab;
     public Transform attackPoint;
     public GameObject waterEffect;
-   
+    public GameObject warningCirclePrefab;
+
     private Transform player;
     private float attackTimer;
 
@@ -40,6 +44,9 @@ public class enemyScript : MonoBehaviour
    
     void Start()
     {
+            Debug.Log("Start");
+            attackTimer = 0f;
+        
         currentHP = maxHP;
         hpBar.currentHP = currentHP;
         //自分にアタッチされているRigidBodyを取得する
@@ -73,25 +80,41 @@ public class enemyScript : MonoBehaviour
         //前進する
         //transform.position += transform.forward * MoveSpeed * Time.deltaTime;
         float distance = Vector3.Distance(transform.position, player.position);
-        if(distance>stopDistance)
+        //if(distance>stopDistance)
+        //{
+        //    //追いかける
+        //    transform.position += transform.forward * MoveSpeed * Time.deltaTime;
+        //}
+        //else
+        //{
+        //    //止まって攻撃
+        //    attackTimer += Time.deltaTime;
+
+        //    if(attackTimer>=attackInterval)
+        //    {
+        //        Attack();
+        //        attackTimer = 0f;
+        //    }
+        //}
+        if (distance > stopDistance && !isPreparingAttack)
         {
-            //追いかける
-            transform.position += transform.forward * MoveSpeed * Time.deltaTime;
+            //移動
+            transform.position += 
+                transform.forward
+                * MoveSpeed 
+                *Time.deltaTime;
         }
         else
         {
-            //止まって攻撃
+            //攻撃
             attackTimer += Time.deltaTime;
-
-            if(attackTimer>=attackInterval)
+            if (attackTimer >= attackInterval && !isPreparingAttack)
             {
-                Attack();
+                isPreparingAttack = true;
+                StartCoroutine(PrepareAttack());
                 attackTimer = 0f;
             }
         }
-
-        //enemyUI();
-
     }
     
     void Attack()
@@ -99,68 +122,65 @@ public class enemyScript : MonoBehaviour
         Debug.Log("attack実行");
         Debug.Log(attackPoint.position);
         //衝撃波エフェクトを出す
-        //Instantiate(waterEffect, attackPoint.position, Quaternion.identity);
-        //Instantiate(waterEffect, attackPoint.position + new Vector3(1.5f, 0, 0), Quaternion.identity);
-        //Instantiate(waterEffect, attackPoint.position + new Vector3(-1.5f, 0, 0), Quaternion.identity);
-        //Debug.Log("エフェクト前");
-        //GameObject effect=Instantiate(
-        //waterEffect,
-        //attackPoint.position + Vector3.up * 2f,
-        //Quaternion.identity
-        //); 
-        //Debug.Log("エフェクト生成成功");
-        //衝撃波エフェクトを出す
         if (waterEffect != null)
         {
-            Instantiate(
-                waterEffect,
-                attackPoint.position + Vector3.up * 2f,
-                Quaternion.identity
-            );
-        }
-        else
-        {
-            Debug.Log("waterEffectが空");
-        }
+            int count = 36;
 
-        Debug.Log("エフェクト後");
-        //範囲内の検索
-        Collider[] hitPlayers = Physics.OverlapSphere(
-            transform.position, attackDistance
-            
-            );
-
-        Debug.Log("OverlapSphere終了");
-        Debug.Log("見つかった数：" + hitPlayers.Length);
-
-        foreach (Collider hit in hitPlayers)
-        {
-            if(hit.CompareTag("Player"))
+            for (int i = 0; i < count; i++)
             {
-                Player player = hit.GetComponentInParent<Player>();
+                float angle = i * Mathf.PI * 2 / count;
+                Vector3 outerPos = transform.position +
+                    new Vector3(
+                        Mathf.Cos(angle) * attackDistance,
+                        0,
+                        Mathf.Sin(angle) * attackDistance
+                        );
+                Instantiate(waterEffect, outerPos, Quaternion.identity);
+                Vector3 pos = transform.position +
+                    new Vector3(
+                        Mathf.Cos(angle) * (attackDistance*0.5f),
+                        0,
+                        Mathf.Sin(angle) * (attackDistance*0.5f)
+                    );
 
-                if (player != null)
+                Instantiate(waterEffect, pos, Quaternion.identity);
+                Collider[] hits = Physics.OverlapSphere(pos, 5f);
+
+                foreach (Collider hit in hits)
                 {
-                    player.TakeDamage(10);
-                    break;
+                    if (hit.CompareTag("Player"))
+                    {
+                        Debug.Log("プレイヤー発見");
+                        Player player = 
+                        hit.GetComponentInParent<Player>();
+
+                        if (player != null)
+                        {
+                            player.TakeDamage(10);
+                        }
+                    }
                 }
             }
         }
-
     }
-
-
-    //private void OnDrawGizmosSelected()
-    //{
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(transform.position, attackDistance);
-    //}
-
-    //private void OnDrawGizmosSelected()
-    //    {if (attackPoint == null) return;
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawWireSphere(attackPoint.position,attackDistance);
-    //}
+    IEnumerator PrepareAttack()
+    {
+        Debug.Log("準備開始");
+        //isPreparingAttack = true;
+        float originalSpeed = MoveSpeed;
+        MoveSpeed = 0f;
+        Instantiate(
+             warningCirclePrefab,
+             transform.position,
+             Quaternion.identity
+             );
+        yield return new WaitForSeconds(2f);
+        Debug.Log("攻撃!");
+        Attack();
+        MoveSpeed = originalSpeed;
+        //attackLocked = false;
+        isPreparingAttack = false;
+    }
 
     private void OnDrawGizmosSelected()
     {
@@ -168,9 +188,4 @@ public class enemyScript : MonoBehaviour
         Gizmos.DrawWireSphere(
         transform.position, attackDistance);
     }
-
-//public void enemyUI()
-//    {
-
-    //    }
 }
