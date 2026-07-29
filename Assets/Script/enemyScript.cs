@@ -7,6 +7,7 @@ public class enemyScript : MonoBehaviour
     public void Damage(float damage)//
     {
         currentHP -= damage;
+        hpBar.TakeDamage(damage);
         
         Debug.Log("Enemy HP : " + currentHP);
         
@@ -26,11 +27,12 @@ public class enemyScript : MonoBehaviour
 
     public float maxHP = 300;
     private float currentHP;
+    public BossHPBar hpBar;
 
     public GameObject shockWavePrefab;
     public Transform attackPoint;
     public GameObject waterEffect;
-
+   
     private Transform player;
     private float attackTimer;
 
@@ -38,7 +40,8 @@ public class enemyScript : MonoBehaviour
    
     void Start()
     {
-        currentHP = maxHP;//+
+        currentHP = maxHP;
+        hpBar.currentHP = currentHP;
         //自分にアタッチされているRigidBodyを取得する
         m_rigidBody = GetComponent<Rigidbody>();
 
