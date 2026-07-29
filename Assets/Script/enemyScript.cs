@@ -86,7 +86,7 @@ public class enemyScript : MonoBehaviour
             if(attackTimer>=attackInterval)
             {
                 Attack();
-                attackTimer = 3.0f;
+                attackTimer = 0f;
             }
         }
 
@@ -102,23 +102,47 @@ public class enemyScript : MonoBehaviour
         //Instantiate(waterEffect, attackPoint.position, Quaternion.identity);
         //Instantiate(waterEffect, attackPoint.position + new Vector3(1.5f, 0, 0), Quaternion.identity);
         //Instantiate(waterEffect, attackPoint.position + new Vector3(-1.5f, 0, 0), Quaternion.identity);
-        Instantiate(
-    waterEffect,
-    attackPoint.position + Vector3.up * 2f,
-    Quaternion.identity
-);
+        //Debug.Log("エフェクト前");
+        //GameObject effect=Instantiate(
+        //waterEffect,
+        //attackPoint.position + Vector3.up * 2f,
+        //Quaternion.identity
+        //); 
+        //Debug.Log("エフェクト生成成功");
+        //衝撃波エフェクトを出す
+        if (waterEffect != null)
+        {
+            Instantiate(
+                waterEffect,
+                attackPoint.position + Vector3.up * 2f,
+                Quaternion.identity
+            );
+        }
+        else
+        {
+            Debug.Log("waterEffectが空");
+        }
+
+        Debug.Log("エフェクト後");
         //範囲内の検索
         Collider[] hitPlayers = Physics.OverlapSphere(
-            transform.position, attackDistance);
-        foreach(Collider hit in hitPlayers)
+            transform.position, attackDistance
+            
+            );
+
+        Debug.Log("OverlapSphere終了");
+        Debug.Log("見つかった数：" + hitPlayers.Length);
+
+        foreach (Collider hit in hitPlayers)
         {
             if(hit.CompareTag("Player"))
             {
-                Player player = hit.GetComponent<Player>();
+                Player player = hit.GetComponentInParent<Player>();
 
                 if (player != null)
                 {
                     player.TakeDamage(10);
+                    break;
                 }
             }
         }
