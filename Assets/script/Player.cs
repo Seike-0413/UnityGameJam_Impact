@@ -25,10 +25,13 @@ public class Player : MonoBehaviour
     GameObject m_mainCamera;
     void Start()
 {
-       
-
+        m_rigidBody = GetComponentInParent<Rigidbody>();
+        if (m_rigidBody == null)
+        { 
+            Debug.LogError("Rigidbodyが取得できません"); 
+        }
         // 自分にアタッチされているRigidBodyを取得する
-        m_rigidBody = GetComponent<Rigidbody>();
+        //m_rigidBody = GetComponent<Rigidbody>();
 
         //メインカメラのゲームオブジェクトを取得する
         m_mainCamera = Camera.main.gameObject;
