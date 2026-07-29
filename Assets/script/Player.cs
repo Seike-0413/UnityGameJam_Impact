@@ -1,145 +1,297 @@
-using GnWrappers;
-using MathNet.Numerics.Optimization.ObjectiveFunctions;
-using System.Collections;
-using System.Collections.Generic;
+
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
 public class Player : MonoBehaviour
 {
-  //  UnityEngine.Animator animator;
-    //[SerializeField]private UnityEngine.Animator animator;
+    [Header("Animator")]
+    [SerializeField]
+    private Animator animator;
+
+    public GameObject unitychan;
 
 
-    public float MoveSpeed = 1.0f;
+    [Header("移動")]
+    public float MoveSpeed = 3.0f;
 
+    public float RotateSpeed = 10.0f;
+
+
+    [Header("ジャンプ")]
     public float JumpPower = 6.0f;
 
-    public int HP = 100;
-    public Gameover gameover;
 
-    bool IsGround = false;
+    [Header("HP")]
+    public int HP = 200;
 
-    Rigidbody m_rigidBody;
-    GameObject m_mainCamera;
+
+    private Rigidbody m_rigidBody;
+    private GameObject m_mainCamera;
+
+
+    private bool IsGround = false;
+
+
+
+    //========================
+    // 初期化
+    //========================
     void Start()
-{
-        m_rigidBody = GetComponentInParent<Rigidbody>();
-        if (m_rigidBody == null)
-        { 
-            Debug.LogError("Rigidbodyが取得できません"); 
-        }
-        // 自分にアタッチされているRigidBodyを取得する
-        //m_rigidBody = GetComponent<Rigidbody>();
+    {
+        m_rigidBody = GetComponent<Rigidbody>();
 
-        //メインカメラのゲームオブジェクトを取得する
+
         m_mainCamera = Camera.main.gameObject;
 
-        //animator = GetComponent<UnityEngine.Animator>();
+
+        if (unitychan != null)
+        {
+            animator = unitychan.GetComponent<Animator>();
+        }
+
+
+        if (animator == null)
+        {
+            Debug.LogError("Animatorがありません");
+        }
     }
-    private Vector3 lastDirection = Vector3.forward;
 
+
+
+
+    //========================
+    // 毎フレーム
+    //========================
     void Update()
-{
-        if (Gamepad.current == null) return;
-        //Debug.Log(m_mainCamera.transform.forward);
+    {
+        if (Gamepad.current == null)
+            return;
 
-        // 移動速度を初期化
-        Vector3 move = Vector3.zero;
 
-        Vector2 moveInput = Gamepad.current.leftStick.ReadValue();
+        Move();
 
-        //move.x = moveInput.x * MoveSpeed;
-        //move.z = moveInput.y * MoveSpeed;
+        Rotate();
 
-        ////カメラを考慮した移動
-        //Vector3 PlayerMove = Vector3.zero;
+        UpdateAnimator();
 
-        Vector3 forward = m_mainCamera.transform.forward;
-        Vector3 right = m_mainCamera.transform.right;
-        forward.y = 0.0f;
-        right.y = 0.0f;
+        Jump();
+    }
+
+
+
+
+    //========================
+    // 移動
+    //========================
+    void Move()
+    {
+        Vector2 input =
+            Gamepad.current.leftStick.ReadValue();
+
+
+
+        Vector3 forward =
+            m_mainCamera.transform.forward;
+
+
+        Vector3 right =
+            m_mainCamera.transform.right;
+
+
+
+        forward.y = 0;
+        right.y = 0;
+
+
         forward.Normalize();
         right.Normalize();
-        Vector3 PlayerMove = forward * moveInput.y + right * moveInput.x;
 
-        //float speed = PlayerMove.magnitude; 
-        //animator.SetFloat("MoveSpeed", speed);
 
-        //bool isAim = Gamepad.current.leftTrigger.isPressed;
-        //animator.SetBool("IsAim", isAim);
 
-        ////移動速度に上記で計算したベクトルを加算する
-        //PlayerMove = right * move.x + forward * move.z;
-        ////移動させる
-        //if (PlayerMove.magnitude > 1.0f)
-        //{
-        //    PlayerMove.Normalize();
-        //}
+        Vector3 direction =
+            forward * input.y +
+            right * input.x;
 
-        //transform.position += PlayerMove * MoveSpeed * Time.deltaTime;
-        m_rigidBody.MovePosition
-            (m_rigidBody.position + 
-            PlayerMove * MoveSpeed * Time.deltaTime
-              );
-        //if (PlayerMove.magnitude > 1.0f)
-        //{
-        //    if (PlayerMove.magnitude > 1.0f) ;
-        //}
 
-        //// 移動させる
-        //transform.position += move;
-        // 回転
-        if (PlayerMove.sqrMagnitude > 0.001f)
+
+        transform.position +=
+            direction *
+            MoveSpeed *
+            Time.deltaTime;
+    }
+
+
+
+
+    //========================
+    // 回転
+    //========================
+    void Rotate()
+    {
+        Vector2 input =
+            Gamepad.current.leftStick.ReadValue();
+
+
+
+        Vector3 forward =
+            m_mainCamera.transform.forward;
+
+
+        Vector3 right =
+            m_mainCamera.transform.right;
+
+
+
+        forward.y = 0;
+        right.y = 0;
+
+
+        forward.Normalize();
+        right.Normalize();
+
+
+
+        Vector3 direction =
+            forward * input.y +
+            right * input.x;
+
+
+
+        if (direction.sqrMagnitude > 0.001f)
         {
-            //lastDirection = PlayerMove.normalized;
-            transform.rotation = Quaternion.LookRotation(PlayerMove);
+            Quaternion targetRotation =
+                Quaternion.LookRotation(direction);
+
+
+
+            transform.rotation =
+                Quaternion.Lerp(
+                    transform.rotation,
+                    targetRotation,
+                    RotateSpeed *
+                    Time.deltaTime
+                );
         }
-        //
-        if (PlayerMove.sqrMagnitude > 0.001f) 
+    }
+
+
+
+
+    //========================
+    // Animator
+    //========================
+    void UpdateAnimator()
+    {
         {
-            lastDirection = PlayerMove.normalized;
+            if (animator == null)
+            {
+                Debug.LogError("Animatorがありません");
+                return;
+            }
+
+            // 左スティック入力
+            Vector2 input =
+                Gamepad.current.leftStick.ReadValue();
+
+
+            // スティックの倒し具合
+            float speed =
+                input.magnitude;
+
+
+            // MoveSpeedに値を渡す
+            animator.SetFloat(
+                "MoveSpeed",
+                speed
+            );
+
+
+            // LTを押している間はAim
+            bool isAim =
+                Gamepad.current.leftTrigger.isPressed;
+
+
+            // IsAimに値を渡す
+            animator.SetBool(
+                "isAim",
+                isAim
+            );
+          
+            if (Gamepad.current.leftTrigger.isPressed)
+            {
+                animator.Play("Aim");
+            }
         }
-        transform.rotation = Quaternion.LookRotation(lastDirection);
-        //// ジャンプ
-        //if (Gamepad.current.buttonSouth.wasPressedThisFrame)
-        //{
-        //    m_rigidBody.AddForce(
-        //        Vector3.up * JumpPower,
-        //        ForceMode.Impulse
-        //    );
-        //}
-        if (IsGround &&
-    Gamepad.current.buttonSouth.wasPressedThisFrame)
+    }
+
+
+
+    //========================
+    // ジャンプ
+    //========================
+    void Jump()
+    {
+        if (!IsGround)
+            return;
+
+
+
+        if (Gamepad.current.buttonSouth.wasPressedThisFrame)
         {
             m_rigidBody.AddForce(
-                new Vector3(0.0f, JumpPower, 0.0f),
+                Vector3.up *
+                JumpPower,
                 ForceMode.VelocityChange
             );
-        }
 
+
+            if (animator != null)
+            {
+                animator.SetTrigger("Jump");
+            }
+        }
     }
+
+
+
+
+    //========================
+    // 接地判定
+    //========================
     private void OnCollisionStay(Collision collision)
     {
         IsGround = true;
     }
+
+
 
     private void OnCollisionExit(Collision collision)
     {
         IsGround = false;
     }
 
+
+
+
+    //========================
+    // ダメージ
+    //========================
     public void TakeDamage(int damage)
     {
         HP -= damage;
 
-        Debug.Log("プレイヤーHP：" + HP);
+
+        Debug.Log(
+            "Player HP : " + HP
+        );
+
 
         if (HP <= 0)
         {
-            Debug.Log("ゲームオーバー");
-            UnityEngine.SceneManagement.SceneManager.LoadScene("Gameover");
+            UnityEngine.SceneManagement.SceneManager.LoadScene(
+                "Gameover"
+            );
         }
     }
 }
