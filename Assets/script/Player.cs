@@ -25,10 +25,13 @@ public class Player : MonoBehaviour
     GameObject m_mainCamera;
     void Start()
 {
-       
-
+        m_rigidBody = GetComponentInParent<Rigidbody>();
+        if (m_rigidBody == null)
+        { 
+            Debug.LogError("Rigidbodyが取得できません"); 
+        }
         // 自分にアタッチされているRigidBodyを取得する
-        m_rigidBody = GetComponent<Rigidbody>();
+        //m_rigidBody = GetComponent<Rigidbody>();
 
         //メインカメラのゲームオブジェクトを取得する
         m_mainCamera = Camera.main.gameObject;
@@ -75,17 +78,20 @@ public class Player : MonoBehaviour
         //    PlayerMove.Normalize();
         //}
 
-        transform.position += PlayerMove * MoveSpeed * Time.deltaTime;
-
+        //transform.position += PlayerMove * MoveSpeed * Time.deltaTime;
+        m_rigidBody.MovePosition
+            (m_rigidBody.position + 
+            PlayerMove * MoveSpeed * Time.deltaTime
+              );
         //if (PlayerMove.magnitude > 1.0f)
         //{
         //    if (PlayerMove.magnitude > 1.0f) ;
         //}
 
-            //// 移動させる
-            //transform.position += move;
-            // 回転
-            if (PlayerMove.sqrMagnitude > 0.001f) ;
+        //// 移動させる
+        //transform.position += move;
+        // 回転
+        if (PlayerMove.sqrMagnitude > 0.001f)
         {
             //lastDirection = PlayerMove.normalized;
             transform.rotation = Quaternion.LookRotation(PlayerMove);
